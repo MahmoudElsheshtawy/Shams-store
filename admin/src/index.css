@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    font-family: Outfit;
+    transition: .5 all;
+}
+select,input,textarea{
+    border: 1px solid #f5e69d;
+    outline-color:#f3e354 ;
+    border-radius: 4px;
+}
+.active{
+    background-color: rgb(242, 215, 140);
+    border-color: rgb(229, 136, 35);
+    transition:  .5s ease-in-out all;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
