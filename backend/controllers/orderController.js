@@ -3,43 +3,101 @@ import orderModel from "../models/orderModel.js"
 import userModel from "../models/userModel.js"
 
 // placing orders using COD Method 
-const placeOrder =async (req,res)=>{
+// const placeOrder =async (req,res)=>{
 
-    try {
-        const {userId,items,amount,address,image} =req.body
-        const orderData ={
-            userId,
-            items,
-            address,
-            amount,
+//     try {
+//         const {userId,items,amount,address,image} =req.body
+//         const orderData ={
+//             userId,
+//             items,
+//             address,
+//             amount,
            
-            paymentMethod:'COD',
-            payment :false,
-            date:Date.now()
-        }
-        const newOrder =new orderModel(orderData)
-        await newOrder.save()
+//             paymentMethod:'COD',
+//             payment :false,
+//             date:Date.now()
+//         }
+//         const newOrder =new orderModel(orderData)
+//         await newOrder.save()
 
-        await userModel.findByIdAndUpdate(userId,{cartData:{}})
-         res.json({success :true, message :" Order Placed"})
+//         await userModel.findByIdAndUpdate(userId,{cartData:{}})
+//          res.json({success :true, message :" Order Placed"})
 
 
-    } catch (error) {
-        console.log(error);
-        res.json({success:false, message:error.message})
+//     } catch (error) {
+//         console.log(error);
+//         res.json({success:false, message:error.message})
         
-    }
-}
+//     }
+// }
+const placeOrder = async (req,res)=>{
+  try {
+
+    const userId = req.userId;   // من auth middleware
+    const { items, amount, address } = req.body;
+
+    const orderData = {
+      userId,
+      items,
+      address,
+      amount,
+      paymentMethod:'الدفع عند التوصيل',
+      payment:false,
+      date:Date.now()
+    };
+
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    await userModel.findByIdAndUpdate(userId,{ cartData:{} });
+
+    res.json({ success:true, message:"Order Placed" });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success:false, message:error.message });
+  }
+};
 
 
 // placing orders using stripe Method 
-const placeOrderStripe =async (req,res)=>{
+const Cash =async (req,res)=>{
+  try {
 
+    const userId = req.userId;   // من auth middleware
+    const { items, amount, address } = req.body;
+
+    const orderData = {
+      userId,
+      items,
+      address,
+      amount,
+      paymentMethod:'تم الدفع كاش',
+      payment:false,
+      date:Date.now()
+    };
+
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    await userModel.findByIdAndUpdate(userId,{ cartData:{} });
+
+    res.json({ success:true, message:"Order Placed" });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success:false, message:error.message });
+  }
 }
 
 
 // placing orders using Razorpay Method 
 const placeOrderRazorpay =async (req,res)=>{
+
+
+
+}
+const placeOrderStripe =async (req,res)=>{
 
 
 
@@ -71,16 +129,30 @@ const allOrders =async (req,res)=>{
 }
 
 // user Order data for frontend
-const userOrders =async (req,res)=>{
-try {
-     const {userId} = req.body
-     const orders = await orderModel.find({userId})
-     res.json({success:true , orders})
-} catch (error) {
-        console.log(error);
-        res.json({success:false, message:error.message})
-}
-}
+// const userOrders =async (req,res)=>{
+// try {
+//      const {userId} = req.body
+//      const orders = await orderModel.find({userId})
+//      res.json({success:true , orders})
+// } catch (error) {
+//         console.log(error);
+//         res.json({success:false, message:error.message})
+// }
+// }
+const userOrders = async (req,res)=>{
+  try {
+
+    const userId = req.userId;   // من token
+
+    const orders = await orderModel.find({ userId });
+
+    res.json({ success:true, orders });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success:false, message:error.message });
+  }
+};
 
 //update order Stats from admin panel
 const updateStatus =async(req,res)=>{
@@ -99,7 +171,8 @@ export{
    placeOrderRazorpay,
    allOrders,
    userOrders,
-   updateStatus
+   updateStatus,
+   Cash
 }
 
 

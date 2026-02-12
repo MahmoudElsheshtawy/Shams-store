@@ -3,6 +3,17 @@
 @tailwind utilities;
 *{
   /* background-color: rgb(255, 255, 255); */
+   
+
+}
+/* body{
+    background-color: rgb(0, 255, 247);
+} */
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 a.active hr{
     display: block;
@@ -22,64 +33,29 @@ a.active hr{
   font-weight: 900;
 }
 .btn {
-  width: 140px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border: none;
-  /* border-radius: 20%; */
-  position: relative;
-  background-color: rgb(255, 255, 255);
-  transition: .2s cubic-bezier(0.19, 1, 0.22, 1);
-  opacity: 0.6;
+ background-color: #00BFA6;
+ padding: 8px 40px;
+ color: #fff;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ cursor: pointer;
+ border-radius: 10px;
+ border: 2px dashed #00BFA6;
+ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+ transition: .4s;
 }
 
-.btn::after {
-  content: '';
-  border-bottom: 3px double rgb(255, 196, 0);
-  width: 0;
-  height: 100%;
-  position: absolute;
-  margin-top: -5px;
-  top: 0;
-  left: 5px;
-  visibility: hidden;
-  opacity: 1;
-  transition: .2s linear;
-}
-
-.btn .icon {
-  transform: translateX(0%);
-  transition: .2s linear;
-  animation: attention 1.2s linear infinite;
-}
-
-.btn:hover::after {
-  visibility: visible;
-  opacity: 0.7;
-  width: 90%;
+.btn span:last-child {
+ display: none;
 }
 
 .btn:hover {
-  letter-spacing: 2px;
-  opacity: 1;
+ transition: .4s;
+ border: 2px dashed #00BFA6;
+ background-color: #fff;
+ color: #00BFA6;
 }
 
-.btn:hover > .icon {
-  transform: translateX(30%);
-  animation: none;
+.btn:active {
+ background-color: #87dbd0;
 }
-
-@keyframes attention {
-  0% {
-    transform: translateX(0%);
-  }
-
-  50% {
-    transform: translateX(30%);
-  }
-}
-

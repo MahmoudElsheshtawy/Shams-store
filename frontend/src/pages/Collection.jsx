@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const Collection = () => {
   const { products = [], searsh, showSearsh } = useContext(ShopContext); // ⬅️ حماية products
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter, setShowFilter] = useState(true);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
@@ -21,6 +21,12 @@ const Collection = () => {
       setCategory((prev) => [...prev, e.target.value]);
     }
   };
+  const categoriesList = [
+  { label: "رجالي", value: "Men" },
+  { label: "حريمي", value: "Women" },
+  { label: "أطفال", value: "Kids" },
+  { label: "أحذية", value: "shoes" },
+];
 
   const togglesubcategory = (e) => {
     if (subCategory.includes(e.target.value)) {
@@ -96,7 +102,7 @@ const Collection = () => {
           onClick={() => setShowFilter(!showFilter)}
           className="my-3 text-xl flex items-center justify-between sm:justify-start cursor-pointer gap-2 font-semibold"
         >
-          FILTERS
+          الفلاتر
           <img
             className={`h-4 sm:hidden transition-transform duration-300 ${
               showFilter ? "rotate-90" : ""
@@ -115,23 +121,24 @@ const Collection = () => {
               transition={{ duration: 0.3 }}
               className="border border-gray-200 rounded-lg p-5 mt-4 bg-white shadow-sm"
             >
-              <p className="mb-3 text-sm font-semibold text-gray-700">CATEGORIES</p>
-              <div className="flex flex-col gap-3 text-sm text-gray-700">
-                {["Men", "Women", "Kids", "Electrical","Ramadan"].map((cat) => (
-                  <label
-                    key={cat}
-                    className="flex items-center gap-2 cursor-pointer hover:text-gray-900"
-                  >
-                    <input
-                      type="checkbox"
-                      value={cat}
-                      onChange={togglecategory}
-                      className="accent-black"
-                    />
-                    {cat}
-                  </label>
-                ))}
-              </div>
+              <p className="mb-3 text-lg font-semibold text-gray-700">التصنيفات</p>
+           <div className="flex flex-col gap-3 text-sm text-gray-700">
+  {categoriesList.map((cat) => (
+    <label
+      key={cat.value}
+      className="flex items-center gap-2 cursor-pointer txt hover:text-gray-900"
+    >
+      <input
+        type="checkbox"
+        value={cat.value}   // 👈 ده اللي بيتفلتر
+        onChange={togglecategory}
+        className="accent-black"
+      />
+      {cat.label}         {/* 👈 ده اللي المستخدم يشوفه */}
+    </label>
+  ))}
+</div>
+
             </motion.div>
           )}
         </AnimatePresence>
@@ -142,7 +149,7 @@ const Collection = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div className="text-xl sm:text-2xl font-semibold">
             <p>
-              ALL_ <span className="text-gray-600 font-medium">COLLECTIONS</span>
+              جميع____<span className="text-gray-600 font-medium">المنتجات</span>
             </p>
           </div>
 
@@ -150,9 +157,9 @@ const Collection = () => {
             onChange={(e) => setSortType(e.target.value)}
             className="border-2 border-gray-300 rounded-md text-sm px-3 py-1 bg-white cursor-pointer hover:border-gray-400 transition"
           >
-            <option value="relavent">Sort by: Relevant</option>
-            <option value="low-high">Sort by: Low to High</option>
-            <option value="high-low">Sort by: High to Low</option>
+            <option value="relavent">ترتيب حسب</option>
+            <option value="low-high">السعر: من الأقل إلى الأعلى</option>
+            <option value="high-low">السعر: من الأعلى إلى الأقل</option>
           </select>
         </div>
 

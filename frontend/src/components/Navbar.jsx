@@ -203,7 +203,7 @@ const Navbar = () => {
   } = useContext(ShopContext);
 
      if (getCartCount() >0) {
-    console.log("aha");
+    // console.log("aha");
     // setScrollingDown(false);
     
      }
@@ -267,22 +267,27 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <ul className="hidden sm:flex gap-5 text-sm md:text-base text-gray-700">
-            {["Home", "Collection", "About", "Contact_Us"].map((item, idx) => (
-              <NavLink
-                key={idx}
-                to={["/", "/collection", "/about", "/contact"][idx]}
-                className="flex flex-col items-center gap-1 hover:text-gray-900 transition-colors"
-              >
-                <p>{item}</p>
-                <hr className="hidden w-2/4 border-none h-[1.5px] bg-gray-700" />
-              </NavLink>
-            ))}
+         {[
+  { name: "الرئيسية", path: "/" },
+  { name: "المنتجات", path: "/collection" },
+  { name: "من نحن", path: "/about" },
+  { name: "تواصل معنا", path: "/contact" },
+].map((item, idx) => (
+  <NavLink
+    key={idx}
+    to={item.path}
+    className="flex flex-col items-center gap-1 hover:text-gray-900 transition-colors"
+  >
+    <p>{item.name}</p>
+    <hr className="hidden w-2/4 border-none h-[1.5px] bg-gray-700" />
+  </NavLink>
+))}
           </ul>
 
           {/* Right Icons */}
           <div className="flex items-center gap-4 sm:gap-5">
             {/* Search */}
-            <NavLink to={"/collection"}>
+            <NavLink onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth",  })} to={"/collection"}>
               <img
                 onClick={() => setShowSearsh(true)}
                 className="w-5 cursor-pointer bg-white"
@@ -302,18 +307,18 @@ const Navbar = () => {
               {token && (
                 <div className="z-10 absolute right-0 pt-2 hidden group-hover:block">
                   <div className="flex flex-col gap-2 w-36 py-3 px-3 bg-slate-100 text-gray-500 rounded shadow-md">
-                    <p className="cursor-pointer hover:text-black">My profile</p>
+                    {/* <p className="cursor-pointer hover:text-black">الملف الشخصي</p> */}
                     <p
                       onClick={() => navigate("/orders")}
                       className="cursor-pointer hover:text-black"
                     >
-                      Orders
+                      طلباتي
                     </p>
                     <p
                       onClick={logout}
                       className="cursor-pointer hover:text-black"
                     >
-                      Logout
+                      تسجيل خروج
                     </p>
                   </div>
                 </div>
@@ -384,11 +389,11 @@ const Navbar = () => {
           </nav> */}
           <nav className="flex flex-col px-6 py-4 gap-2">
   {[
-    { name: "Home", path: "/" },
-    { name: "Collection", path: "/collection" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
-  ].map((item, idx) => (
+  { name: "الرئيسية", path: "/" },
+  { name: "المنتجات", path: "/collection" },
+  { name: "من نحن", path: "/about" },
+  { name: "تواصل معنا", path: "/contact" },
+].map((item, idx) => (
     <NavLink
       key={idx}
       to={item.path}

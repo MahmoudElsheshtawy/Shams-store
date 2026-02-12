@@ -69,6 +69,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
 import { assets } from "../assets/frontend_assets/assets"; // صورة placeholder
+import { motion } from "framer-motion";
 
 const LatestCollection = () => {
   const { products = [] } = useContext(ShopContext); // حماية من undefined
@@ -86,6 +87,8 @@ const LatestCollection = () => {
   useEffect(() => {
   if (Array.isArray(products) && products.length > 0) {
     setLatestProducts(products.slice(0, 15));
+    // console.log(products);
+    
     setIsLoading(false);
   } else {
     setIsLoading(true);
@@ -101,9 +104,29 @@ const LatestCollection = () => {
         <Title text2={"COLLECTIONS"} />
       
       </div> */}
-<div className="text-center py-3">
-  <p className="icons select-none text-sm sm:text-base md:text-lg"> New_COLLECTIONS</p>
- 
+<div className="text-center py-4">
+     <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-12 relative"
+      >
+        <div className="relative inline-block">
+          {/* تزيين خلفية النص */}
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-xl rounded-full"></div>
+          
+          {/* النص الرئيسي */}
+          <h1 className="relative text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">
+            تشكيلات شمس ستور
+          </h1>
+          
+          {/* خط زخرفي تحت النص */}
+          <div className="relative mx-auto w-32 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-4"></div>
+          
+          {/* وصف */}
+         
+        </div>
+      </motion.div>
 </div>
 
 
@@ -144,3 +167,4 @@ const LatestCollection = () => {
 };
 
 export default LatestCollection;
+

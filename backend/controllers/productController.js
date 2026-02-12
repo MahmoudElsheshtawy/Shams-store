@@ -225,7 +225,7 @@ const updatePrice = async (req, res) => {
 // ------------ Electrical Products Only ------------
 const electricalProducts = async (req, res) => {
   try {
-    const products = await productModel.find({ category: "Electrical" });
+    const products = await productModel.find({ category: "shoes" });
     res.json({ success: true, products });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -252,38 +252,241 @@ export const eidProducts = async (req, res) => {
   }
 };
 // ------------ rating ------------
-// productController.js
+const addProductReview = async (req, res) => {
+  try {
+    const { productId, rating } = req.body;
+    const userId = req.userId; // جاي من authUser
 
+    
+    if (!productId || !rating) {
+      return res.json({ success: false, message: "بيانات ناقصة" });
+    }
 
- const addProductReview = async (req, res) => {
-  const { rating } = req.body;
+    if (!userId) {
+      return res.json({ success: false, message: "يوزر غير موجود" });
+    }
 
-  if (!req.user) return res.status(401).json({ message: "سجل دخول أولاً" });
+    if (rating < 1 || rating > 5) {
+      return res.json({ success: false, message: "التقييم من 1 لـ 5" });
+    }
 
-  if (!rating) return res.status(400).json({ message: "اختر عدد النجوم أولًا" });
+    const product = await productModel.findById(productId);
 
-  const product = await productModel.findById(req.params.id);
-  if (!product) return res.status(404).json({ message: "المنتج غير موجود" });
+    if (!product) {
+      return res.json({ success: false, message: "المنتج غير موجود" });
+    }
 
-  const alreadyReviewed = product.reviews.find(
-    (r) => r.user.toString() === req.user._id.toString()
-  );
-  if (alreadyReviewed) return res.status(400).json({ message: "لقد قيمت هذا المنتج من قبل" });
+    if (!product.reviews) product.reviews = [];
 
-  const review = {
-    user: req.user._id,
-    rating: Number(rating),
-    date: new Date()
-  };
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user.toString() === userId.toString()
+    );
 
-  product.reviews.push(review);
-  product.numReviews = product.reviews.length;
-  product.rating =
-    product.reviews.reduce((acc, item) => acc + item.rating, 0) / product.numReviews;
+    if (alreadyReviewed) {
+      return res.json({
+        success: false,
+        message: "لقد قمت بتقييم هذا المنتج من قبل",
+      });
+    }
 
-  await product.save();
-  res.status(201).json({ message: "تم إضافة التقييم", rating: product.rating });
+    product.reviews.push({
+      user: userId,
+      rating: Number(rating),
+    });
+
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    res.json({ success: true, message: "تم إضافة التقييم بنجاح" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
 };
+
+//  const addProductReview = async (req, res) => {
+//   try {
+//     const { productId, rating } = req.body;
+//     const userId = req.body.userId; // جاي من authUser
+
+//     if (!productId || !rating) {
+//       return res.json({ success: false, message: "بيانات ناقصة" });
+//     }
+
+//     if (rating < 1 || rating > 5) {
+//       return res.json({ success: false, message: "التقييم من 1 لـ 5" });
+//     }
+
+//     const product = await productModel.findById(productId);
+
+//     if (!product) {
+//       return res.json({ success: false, message: "المنتج غير موجود" });
+//     }
+
+//     // تأكد إن reviews موجودة
+//     if (!product.reviews) {
+//       product.reviews = [];
+//     }
+
+//     // هل المستخدم قيّم قبل كده؟
+//     const alreadyReviewed = product.reviews.find(
+//       (r) => r.user.toString() === userId.toString()
+//     );
+
+//     if (alreadyReviewed) {
+//       return res.json({
+//         success: false,
+//         message: "قمت بتقييم هذا المنتج من قبل",
+//       });
+//     }
+
+//     // إضافة التقييم
+//     product.reviews.push({
+//       user: userId,
+//       rating: Number(rating),
+//     });
+
+//     // حساب متوسط التقييم
+//     product.numReviews = product.reviews.length;
+//     product.rating =
+//       product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+//       product.reviews.length;
+
+//     await product.save();
+
+//     res.json({ success: true, message: "تم إضافة التقييم بنجاح" });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
+// const addProductReview = async (req, res) => {
+//   try {
+//     const { productId, rating } = req.body;
+//     const userId = req.body.userId; // جاي من authUser middleware
+
+//     if (!productId || !rating) {
+//       return res.json({
+//         success: false,
+//         message: "بيانات غير مكتملة",
+//       });
+//     }
+
+//     if (rating < 1 || rating > 5) {
+//       return res.json({
+//         success: false,
+//         message: "التقييم يجب أن يكون من 1 إلى 5",
+//       });
+//     }
+
+//     const product = await productModel.findById(productId);
+
+//     if (!product) {
+//       return res.json({
+//         success: false,
+//         message: "المنتج غير موجود",
+//       });
+//     }
+
+//     // ❌ منع التقييم المكرر
+//     const alreadyReviewed = product.reviews.find(
+//       (r) => r.user.toString() === userId.toString()
+//     );
+
+//     if (alreadyReviewed) {
+//       return res.json({
+//         success: false,
+//         message: "قمت بتقييم هذا المنتج من قبل",
+//       });
+//     }
+
+//     // ✅ إضافة الريفيو
+//     const review = {
+//       user: userId,
+//       rating: Number(rating),
+//     };
+
+//     product.reviews.push(review);
+//     product.numReviews = product.reviews.length;
+
+//     // ⭐ حساب متوسط التقييم
+//     product.rating =
+//       product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+//       product.reviews.length;
+
+//     await product.save();
+
+//     res.json({
+//       success: true,
+//       message: "تم إضافة التقييم بنجاح",
+//       rating: product.rating,
+//       numReviews: product.numReviews,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+// const addProductReview = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const { rating } = req.body;
+//     const userId = req.user._id; // جاي من middleware auth
+
+//     if (!rating || rating < 1 || rating > 5) {
+//       return res.json({ success: false, message: "Rating must be 1 to 5" });
+//     }
+
+//     const product = await productModel.findById(productId);
+//     if (!product) {
+//       return res.json({ success: false, message: "Product not found" });
+//     }
+
+//     // ❌ منع التقييم المتكرر
+//     const alreadyRated = product.reviews.find(
+//       (r) => r.user.toString() === userId.toString()
+//     );
+
+//     if (alreadyRated) {
+//       return res.json({
+//         success: false,
+//         message: "You already rated this product",
+//       });
+//     }
+
+//     // ✅ إضافة التقييم
+//     product.reviews.push({
+//       user: userId,
+//       rating: Number(rating),
+//     });
+
+//     product.ratingCount = product.reviews.length;
+//     product.ratingAverage =
+//       product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+//       product.ratingCount;
+
+//     await product.save();
+
+//     res.json({
+//       success: true,
+//       message: "Review added successfully",
+//       ratingAverage: product.ratingAverage,
+//       ratingCount: product.ratingCount,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 
 // ------------ rating ------------
 

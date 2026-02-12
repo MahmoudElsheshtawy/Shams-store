@@ -87,6 +87,17 @@ import sport_3 from './sport_3.jpeg'
 import sport_4 from './sport_4.jpeg'
 import logoooo from './logoooo.svg'
 import shamsstore from './shamsstore.jpeg'
+import ShamsStoreHome2 from './ShamsStoreHome2.jpeg'
+import sh1 from './sh1.jpeg'
+import sh2 from './sh2.jpeg'
+import sh3 from './sh3.jpeg'
+import sh4 from './sh4.jpeg'
+import sh5 from './sh5.jpeg'
+import sh6 from './sh6.jpeg'
+import sh7 from './sh7.jpeg'
+import sh8 from './sh8.jpeg'
+import sh9 from './sh9.jpeg'
+import sh10 from './sh10.jpeg'
 
 
 
@@ -123,6 +134,17 @@ export const assets = {
   sport_4,
   logoooo,
   shamsstore,
+  ShamsStoreHome2,
+  sh1,
+  sh2 ,
+  sh3 ,
+  sh4 ,
+  sh5,
+  sh6,
+  sh7,
+  sh8,
+  sh9,
+  sh10,
 }
 
 

@@ -33,11 +33,12 @@ import {
   electricalProducts,
   ramadanProducts,
   eidProducts,
-  addProductReview,
+  // addProductReview,
+  addProductReview ,
 } from "../controllers/productController.js";
 // import userAuth from "../middleware/auth.js"; // الميدل وير اللي يتحقق من تسجيل الدخول
+// import authUser from "../middleware/auth.js";
 import authUser from "../middleware/auth.js";
-
 const router = express.Router();
 
 router.post(
@@ -54,10 +55,11 @@ router.post(
 router.post("/remove", adminAuth, removeProduct);
 router.post("/single", singleProduct);
 router.get("/list", listProduct);
-router.get("/electrical", electricalProducts);
+router.get("/shoes", electricalProducts);
 router.put("/update-price", adminAuth, updatePrice);
 router.get("/ramadan", ramadanProducts);
 router.get("/eid", eidProducts);
-
-router.post("/:id/review", authUser, addProductReview);
+router.post("/review", authUser, addProductReview);
+// router.post("/:id/review", authUser, addProductReview);
+// router.post("/:id/review", authUser, addProductReview);
 export default router;
