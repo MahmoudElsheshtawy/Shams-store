@@ -117,7 +117,7 @@ const Footer = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-500">Store Phone</p>
-                <a href="tel:01092997107" className="text-sm font-medium text-gray-900 hover:text-emerald-600 transition-colors">
+                <a  className="text-sm font-medium text-gray-900 hover:text-emerald-600 transition-colors">
                   01092997107
                 </a>
               </div>
@@ -146,12 +146,12 @@ const Footer = () => {
             </div>
 
             {/* Developer Contact - WhatsApp */}
-            <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50/50 rounded-xl border border-green-200/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500 rounded-lg shadow-md">
+            {/* <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50/50 rounded-xl border border-green-200/50"> */}
+              {/* <div className="flex items-center gap-3"> */}
+                {/* <div className="p-2 bg-green-500 rounded-lg shadow-md">
                   <Smartphone className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1">
+                </div> */}
+                {/* <div className="flex-1">
                   <p className="text-xs text-green-700 font-medium mb-1">تواصل مع المبرمج</p>
                   <a 
                     href="https://wa.me/01093482958"
@@ -162,9 +162,9 @@ const Footer = () => {
                     <Send className="w-3.5 h-3.5" />
                     <span>راسلني على واتساب</span>
                   </a>
-                </div>
-              </div>
-            </div>
+                </div> */}
+              {/* </div> */}
+            {/* </div> */}
           </div>
 
           {/* Newsletter - يظهر فقط في الشاشات المتوسطة فأكبر */}
@@ -201,9 +201,9 @@ const Footer = () => {
 
       {/* Bottom Bar - متجاوب للهاتف - Developer Focused */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-        <p className="text-gray-500 text-xs sm:text-sm order-2 sm:order-1">
-          © {currentYear} Shams Store. All rights reserved.
-        </p>
+        {/* <p className="text-gray-500 text-xs sm:text-sm order-2 sm:order-1"> */}
+          {/* © {currentYear} Shams Store. All rights reserved. */}
+        {/* </p> */}
         <div className="flex flex-col sm:flex-row items-center gap-3 order-1 sm:order-2">
           <div className="flex items-center gap-2">
             <Globe className="w-3.5 h-3.5 text-emerald-500" />
@@ -229,22 +229,7 @@ const Footer = () => {
       {/* Mobile Newsletter + Developer Contact - يظهر فقط في الهاتف */}
       <div className="sm:hidden mt-6 space-y-4">
         {/* Newsletter */}
-        <div className="pt-4 border-t border-gray-200">
-          <p className="text-sm font-semibold text-gray-800 mb-2">Newsletter</p>
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="w-full px-4 py-2.5 pl-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none transition-all text-sm bg-white"
-              />
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            </div>
-            <button className="p-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+  
 
         {/* Developer Contact Mobile */}
         <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">

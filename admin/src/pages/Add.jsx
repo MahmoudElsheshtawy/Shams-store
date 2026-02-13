@@ -269,6 +269,7 @@ const Add = ({ token }) => {
         formData,
         { headers: { token } }
       );
+     console.log(response.data);
 
       if (response.data.success) {
         toast.success(response.data.message);

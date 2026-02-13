@@ -1,84 +1,3 @@
-// import userModel from "../models/userModel.js"
-
-
-// // add product to user cart
-// const addToCart = async (req,res)=>{
-//         try {
-//             const {userId ,itemId,size}= req.body
-
-//             const userData =await userModel.findById(userId)
-//             let cartData =await userData.cartData;
-//             if (cartData[itemId]) {
-//                 if(cartData[itemId][size]){
-//                     cartData[itemId][size] +=1
-//                 }else{
-//                     cartData[itemId][size] = 1
-//                 }
-//             }else{
-//                 cartData[itemId]={}
-//                 cartData[itemId][size]= 1
-//             }
-
-//             await userModel.findByIdAndUpdate(userId,{cartData})
-//             res.json({success : true ,message: 'Added To Cart'})
-//         } catch (error) {
-//             console.log(error);
-//             res.json({success : false ,message: error.message })
-
-            
-//         }
-
-
-
-// }
-
-
-
-
-// // update  to user cart
-// const updateCart = async (req,res)=>{
-//     try {
-//         const {userId,itemId,size,quantity} =req.body
-
-        
-//             const userData =await userModel.findById(userId)
-//             let cartData =await userData.cartData;
-
-//             cartData[itemId][size] =quantity
-
-            
-//             await userModel.findByIdAndUpdate(userId,{cartData})
-//             res.json({success : true ,message: 'Cart updated'})
-//     } catch (error) {
-//             console.log(error);
-//             res.json({success : false ,message: error.message })
-
-            
-//     }
-// }
-
-
-
-
-// // get  user cart data
-// const getUserCart = async (req,res)=>{
-// try {
-//     const {userId} =req.body
-
-//             const userData =await userModel.findById(userId)
-//             let cartData =await userData.cartData;
-
-//             res.json({success:true, cartData})
-// } catch (error) {
-//         console.log(error);
-//             res.json({success : false ,message: error.message })
-
-            
-// }
-// }
-
-
-// export{addToCart,updateCart,getUserCart}
 
 
 import userModel from "../models/userModel.js";
@@ -86,30 +5,30 @@ import userModel from "../models/userModel.js";
 // -------- Add product to user cart --------
 const addToCart = async (req, res) => {
   try {
-    const { userId, itemId, size } = req.body;
+    const userId = req.userId;
+    const { itemId, size } = req.body;
 
-    // التحقق من وجود المستخدم
+    if (!size) {
+      return res.json({ success: false, message: "يجب اختيار المقاس" });
+    }
+
     const userData = await userModel.findById(userId);
     if (!userData) {
       return res.json({ success: false, message: "المستخدم غير موجود" });
     }
 
-    // إنشاء cartData إذا مش موجودة
     let cartData = userData.cartData || {};
+    const sizeKey = String(size); // 👈 مهم جدًا
 
-    // إضافة أو تحديث المنتج
-    if (cartData[itemId]) {
-      if (cartData[itemId][size]) {
-        cartData[itemId][size] += 1;
-      } else {
-        cartData[itemId][size] = 1;
-      }
-    } else {
+    if (!cartData[itemId]) {
       cartData[itemId] = {};
-      cartData[itemId][size] = 1;
     }
 
-    await userModel.findByIdAndUpdate(userId, { cartData }, { new: true });
+    cartData[itemId][sizeKey] =
+      (cartData[itemId][sizeKey] || 0) + 1;
+
+    await userModel.findByIdAndUpdate(userId, { cartData });
+
     res.json({ success: true, message: "تمت إضافة المنتج للعربة", cartData });
   } catch (error) {
     console.log(error);
@@ -117,10 +36,44 @@ const addToCart = async (req, res) => {
   }
 };
 
+// const addToCart = async (req, res) => {
+//   try {
+//     const { userId, itemId, size } = req.body;
+
+//     // التحقق من وجود المستخدم
+//     const userData = await userModel.findById(userId);
+//     if (!userData) {
+//       return res.json({ success: false, message: "المستخدم غير موجود" });
+//     }
+
+//     // إنشاء cartData إذا مش موجودة
+//     let cartData = userData.cartData || {};
+
+//     // إضافة أو تحديث المنتج
+//     if (cartData[itemId]) {
+//       if (cartData[itemId][size]) {
+//         cartData[itemId][size] += 1;
+//       } else {
+//         cartData[itemId][size] = 1;
+//       }
+//     } else {
+//       cartData[itemId] = {};
+//       cartData[itemId][size] = 1;
+//     }
+
+//     await userModel.findByIdAndUpdate(userId, { cartData }, { new: true });
+//     res.json({ success: true, message: "تمت إضافة المنتج للعربة", cartData });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 // -------- Update product quantity in cart --------
 const updateCart = async (req, res) => {
   try {
-    const { userId, itemId, size, quantity } = req.body;
+    const userId = req.userId;
+    const { itemId, size, quantity } = req.body;
 
     const userData = await userModel.findById(userId);
     if (!userData) {
@@ -128,12 +81,20 @@ const updateCart = async (req, res) => {
     }
 
     let cartData = userData.cartData || {};
+    const sizeKey = String(size);
 
-    // إنشاء الهيكل إذا مش موجود
-    if (!cartData[itemId]) cartData[itemId] = {};
-    cartData[itemId][size] = quantity;
+    if (!cartData[itemId]) {
+      cartData[itemId] = {};
+    }
 
-    await userModel.findByIdAndUpdate(userId, { cartData }, { new: true });
+    if (quantity <= 0) {
+      delete cartData[itemId][sizeKey];
+    } else {
+      cartData[itemId][sizeKey] = quantity;
+    }
+
+    await userModel.findByIdAndUpdate(userId, { cartData });
+
     res.json({ success: true, message: "تم تحديث العربة", cartData });
   } catch (error) {
     console.log(error);
@@ -141,22 +102,81 @@ const updateCart = async (req, res) => {
   }
 };
 
+// const updateCart = async (req, res) => {
+//   try {
+//     const { userId, itemId, size, quantity } = req.body;
+
+//     const userData = await userModel.findById(userId);
+//     if (!userData) {
+//       return res.json({ success: false, message: "المستخدم غير موجود" });
+//     }
+
+//     let cartData = userData.cartData || {};
+
+//     // إنشاء الهيكل إذا مش موجود
+//     if (!cartData[itemId]) cartData[itemId] = {};
+//     cartData[itemId][size] = quantity;
+
+//     await userModel.findByIdAndUpdate(userId, { cartData }, { new: true });
+//     res.json({ success: true, message: "تم تحديث العربة", cartData });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 // -------- Get user cart data --------
+// const getUserCart = async (req, res) => {
+//   try {
+//     const { userId } = req.body;
+
+//     const userData = await userModel.findById(userId);
+//     if (!userData) {
+//       return res.json({ success: false, message: "المستخدم غير موجود" });
+//     }
+
+//     const cartData = userData.cartData || {};
+//     res.json({ success: true, cartData });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 const getUserCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId;
 
     const userData = await userModel.findById(userId);
     if (!userData) {
       return res.json({ success: false, message: "المستخدم غير موجود" });
     }
 
-    const cartData = userData.cartData || {};
-    res.json({ success: true, cartData });
+    res.json({ success: true, cartData: userData.cartData || {} });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+// -------- Clear user cart (empty all items) --------
+const clearCart = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const userData = await userModel.findById(userId);
+    if (!userData) {
+      return res.json({ success: false, message: "المستخدم غير موجود" });
+    }
+
+    // مسح العربة بالكامل (تعيين كائن فارغ)
+    const cartData = {};
+    
+    await userModel.findByIdAndUpdate(userId, { cartData });
+
+    res.json({ success: true, message: "تم مسح العربة بالكامل", cartData });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
 };
 
-export { addToCart, updateCart, getUserCart };
+export { addToCart, updateCart, getUserCart,clearCart };

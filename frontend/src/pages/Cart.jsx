@@ -150,32 +150,31 @@ const Cart = () => {
   const { products, currency, cartItems, updateQuantity, navigate, clearCart } =
     useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
+// const { clearCart } = useContext(ShopContext);
 
+const handleClearCart = () => {
+  clearCart(); // هتشتغل على طول
+};
   useEffect(() => {
-    if (!cartItems || Object.keys(cartItems).length === 0) {
-      setCartData([]);
-      return;
-    }
+  if (!cartItems || Object.keys(cartItems).length === 0) {
+    setCartData([]); // يمسح CartData فورًا
+    return;
+  }
 
-    if (products.length > 0) {
-      const tempData = [];
+  const tempData = [];
 
-      for (const productId in cartItems) {
-        for (const size in cartItems[productId]) {
-          const quantity = cartItems[productId][size];
-          if (quantity > 0) {
-            tempData.push({
-              _id: productId,
-              size,
-              quantity,
-            });
-          }
-        }
+  for (const productId in cartItems) {
+    for (const size in cartItems[productId]) {
+      const quantity = cartItems[productId][size];
+      if (quantity > 0) {
+        tempData.push({ _id: productId, size, quantity });
       }
-
-      setCartData(tempData);
     }
-  }, [cartItems, products]);
+  }
+
+  setCartData(tempData);
+}, [cartItems, products]);
+
 
   // Get unique related products that are NOT in cart
   const relatedProducts = useMemo(() => {
@@ -215,9 +214,9 @@ const Cart = () => {
               </div>
             </div>
 
-            {cartData.length > 0 && (
+            {cartData.length >= 0 && (
               <button
-                onClick={clearCart}
+                onClick={handleClearCart}
                 className="flex items-center gap-1.5 px-3 py-2 text-rose-600 hover:bg-rose-50 active:bg-rose-100 rounded-lg transition-all duration-200 active:scale-95"
               >
                 <Trash2 className="w-4.5 h-4.5" />
@@ -271,44 +270,36 @@ const Cart = () => {
                     >
                       <div className="flex flex-col sm:flex-row gap-5">
                         {/* Product Image */}
-                        <div className="flex items-start gap-4 sm:block">
-                          <div className="relative group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 to-transparent rounded-xl"></div>
-                            <img
-                              className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-gray-200 shadow-sm group-hover:shadow-md transition-all duration-300"
-                              src={productImage}
-                              alt={productData.name || "Product"}
-                            />
-                            {item.size && (
-                              <span className="absolute -top-2 -right-2 px-3 py-1 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-xs font-medium rounded-full shadow-md">
-                                {item.size}
-                              </span>
-                            )}
-                          </div>
+                      <div className="flex items-start gap-3 w-full">
+  {/* صورة ثابتة */}
+  <div className="relative flex-shrink-0">
+    <img className="w-20 h-20 rounded-lg object-cover" src={productImage} />
+    {item.size && (
+      <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-black text-white text-[10px] rounded-full">
+        {item.size}
+      </span>
+    )}
+  </div>
 
-                          {/* Mobile Product Info */}
-                          <div className="sm:hidden flex-1">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h3 className="font-semibold text-gray-800 text-sm leading-tight line-clamp-2">
-                                  {productData.name || "-"}
-                                </h3>
-                                <p className="text-emerald-600 font-medium text-sm mt-1.5">
-                                  {productData.price || 0}
-                                  {currency}
-                                </p>
-                              </div>
-                              <button
-                                onClick={() =>
+  {/* منطقة النص المتحكمة */}
+  <div className="flex-1 min-w-0">
+    <div className="flex justify-between gap-1">
+      <div className="min-w-0 flex-1">
+        <h3 className="font-medium text-gray-800 text-sm break-words line-clamp-2">
+          {productData.name}
+        </h3>
+        <p className="text-emerald-600 font-medium text-sm mt-1">
+          {productData.price}{currency}
+        </p>
+      </div>
+      <button  onClick={() =>
                                   updateQuantity(item._id, item.size, 0)
-                                }
-                                className="p-2 hover:bg-rose-50 active:bg-rose-100 text-rose-500 rounded-lg transition-all duration-200"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                                } className="flex-shrink-0 p-1.5">
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+</div>
 
                         {/* Product Details */}
                         <div className="flex-1">
@@ -460,7 +451,7 @@ const Cart = () => {
                         استمر في التسوق
                       </button>
                       <button
-                        onClick={clearCart}
+                       onClick={handleClearCart}
                         className="w-full border-2 border-rose-300 text-rose-600 py-3 px-4 rounded-xl hover:bg-rose-50/80 active:bg-rose-100 transition-all duration-200 font-medium flex items-center justify-center gap-2"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -468,13 +459,13 @@ const Cart = () => {
                       </button>
                     </div>
                   </div>
-
+{/* 
                   <div className="mt-6 pt-6 border-t border-gray-100">
                     <p className="text-sm text-gray-500 leading-relaxed">
                       الشحن مجاني للطلبات فوق 200 ريال. الطلبات تخضع للشروط
                       والأحكام. الضرائب محسوبة عند الدفع.
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
