@@ -139,12 +139,146 @@
 // };
 
 // export default Sidebar;
+// import React from "react";
+// import { NavLink } from "react-router-dom";
+// import { AiOutlinePlusCircle, AiOutlineUnorderedList } from "react-icons/ai";
+// import { FaShoppingCart } from "react-icons/fa";
+// import { GiElectric } from "react-icons/gi";
+// import { LuPackage } from "react-icons/lu"; // أيقونة إضافية لقائمة رمضان
+
+// const Sidebar = () => {
+//   // دالة لتحديد كلاس الـ NavLink النشط
+//   const navLinkClass = ({ isActive }) =>
+//     `flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+//       isActive
+//         ? "bg-emerald-50 text-emerald-600 border-r-4 border-emerald-500 md:border-r-4 md:border-l-0"
+//         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+//     }`;
+
+//   const mobileNavLinkClass = ({ isActive }) =>
+//     `flex flex-col items-center justify-center min-w-[70px] py-2 px-1 rounded-lg transition-all duration-200 ${
+//       isActive
+//         ? "text-emerald-600 bg-emerald-50"
+//         : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+//     }`;
+
+//   return (
+//     <>
+//       {/* ========== نسخة الموبايل (شاشات أصغر من md) ========== */}
+//       <div className="md:hidden w-full bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+//         <div className="flex items-center justify-start overflow-x-auto px-1 py-1 gap-1 scrollbar-hide">
+//           <NavLink to="/add" className={mobileNavLinkClass}>
+//             <AiOutlinePlusCircle className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">إضافة</span>
+//           </NavLink>
+
+//           <NavLink to="/list" className={mobileNavLinkClass}>
+//             <AiOutlineUnorderedList className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">المنتجات</span>
+//           </NavLink>
+
+//           <NavLink to="/orders" className={mobileNavLinkClass}>
+//             <FaShoppingCart className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">الطلبات</span>
+//           </NavLink>
+
+//           <NavLink to="/electrical/add" className={mobileNavLinkClass}>
+//             <GiElectric className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">أحذية</span>
+//           </NavLink>
+
+//           <NavLink to="/electrical/list" className={mobileNavLinkClass}>
+//             <AiOutlineUnorderedList className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">قائمتهم</span>
+//           </NavLink>
+
+//           {/* ============================================== */}
+//               <NavLink to="/gloves/add" className={mobileNavLinkClass}>
+//             <GiElectric className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">جوانتي</span>
+//           </NavLink>
+
+//           <NavLink to="/gloves/list" className={mobileNavLinkClass}>
+//             <AiOutlineUnorderedList className="text-2xl" />
+//             <span className="text-[11px] mt-1 whitespace-nowrap">قايمه الجوانتي</span>
+//           </NavLink>
+//           {/* ============================================== */}
+
+         
+//         </div>
+//       </div>
+
+//       {/* ========== نسخة الديسكتوب (شاشات md فأكبر) ========== */}
+//       <aside className="hidden md:flex md:flex-col w-64 bg-white border-l border-gray-200 h-screen sticky top-0 overflow-y-auto shadow-sm">
+//         <div className="p-4 border-b border-gray-100">
+//           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+//             <span className="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+//             لوحة التحكم
+//           </h2>
+//         </div>
+
+//         <nav className="flex-1 px-3 py-6 space-y-1">
+//           {/* مجموعة المنتجات الرئيسية */}
+//           <div className="mb-4">
+//             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+//               عام
+//             </p>
+//             <NavLink to="/add" className={navLinkClass}>
+//               <AiOutlinePlusCircle className="text-xl" />
+//               <span>إضافة منتج</span>
+//             </NavLink>
+
+//             <NavLink to="/list" className={navLinkClass}>
+//               <AiOutlineUnorderedList className="text-xl" />
+//               <span>جميع المنتجات</span>
+//             </NavLink>
+
+//             <NavLink to="/orders" className={navLinkClass}>
+//               <FaShoppingCart className="text-xl" />
+//               <span>الطلبات</span>
+//             </NavLink>
+//           </div>
+
+//           {/* مجموعة الأحذية */}
+//           <div className="mb-4">
+//             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+//               الأحذية
+//             </p>
+//             <NavLink to="/electrical/add" className={navLinkClass}>
+//               <GiElectric className="text-xl" />
+//               <span>إضافة حذاء</span>
+//             </NavLink>
+
+//             <NavLink to="/electrical/list" className={navLinkClass}>
+//               <AiOutlineUnorderedList className="text-xl" />
+//               <span>قائمة الأحذية</span>
+//             </NavLink>
+//           </div>
+
+//           {/* مجموعة رمضان */}
+       
+//         </nav>
+
+//         <div className="p-4 border-t border-gray-100">
+//           <div className="flex items-center gap-2 text-xs text-gray-500">
+//             <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+//             <span>جميع الحقوق محفوظة © 2025</span>
+//           </div>
+//         </div>
+//       </aside>
+//     </>
+//   );
+// };
+
+// export default Sidebar;
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { AiOutlinePlusCircle, AiOutlineUnorderedList } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
-import { GiElectric } from "react-icons/gi";
-import { LuPackage } from "react-icons/lu"; // أيقونة إضافية لقائمة رمضان
+import { GiElectric, GiGloves, GiRunningShoe } from "react-icons/gi"; // أضفنا GiGloves و GiRunningShoe
+import { LuPackage } from "react-icons/lu";
+import { MdOutlineSportsHandball } from "react-icons/md"; // أيقونة بديلة للقفازات
 
 const Sidebar = () => {
   // دالة لتحديد كلاس الـ NavLink النشط
@@ -182,17 +316,27 @@ const Sidebar = () => {
             <span className="text-[11px] mt-1 whitespace-nowrap">الطلبات</span>
           </NavLink>
 
+          {/* قسم الأحذية في الموبايل */}
           <NavLink to="/electrical/add" className={mobileNavLinkClass}>
-            <GiElectric className="text-2xl" />
-            <span className="text-[11px] mt-1 whitespace-nowrap">أحذية</span>
+            <GiRunningShoe className="text-2xl" />
+            <span className="text-[11px] mt-1 whitespace-nowrap">إضافة حذاء</span>
           </NavLink>
 
           <NavLink to="/electrical/list" className={mobileNavLinkClass}>
             <AiOutlineUnorderedList className="text-2xl" />
-            <span className="text-[11px] mt-1 whitespace-nowrap">قائمتهم</span>
+            <span className="text-[11px] mt-1 whitespace-nowrap">قائمة أحذية</span>
           </NavLink>
 
-         
+          {/* قسم القفازات في الموبايل */}
+          <NavLink to="/gloves/add" className={mobileNavLinkClass}>
+            <GiGloves className="text-2xl" />
+            <span className="text-[11px] mt-1 whitespace-nowrap">إضافة قفاز</span>
+          </NavLink>
+
+          <NavLink to="/gloves/list" className={mobileNavLinkClass}>
+            <AiOutlineUnorderedList className="text-2xl" />
+            <span className="text-[11px] mt-1 whitespace-nowrap">قائمة قفازات</span>
+          </NavLink>
         </div>
       </div>
 
@@ -233,7 +377,7 @@ const Sidebar = () => {
               الأحذية
             </p>
             <NavLink to="/electrical/add" className={navLinkClass}>
-              <GiElectric className="text-xl" />
+              <GiRunningShoe className="text-xl" />
               <span>إضافة حذاء</span>
             </NavLink>
 
@@ -243,8 +387,21 @@ const Sidebar = () => {
             </NavLink>
           </div>
 
-          {/* مجموعة رمضان */}
-       
+          {/* مجموعة القفازات */}
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+              القفازات
+            </p>
+            <NavLink to="/gloves/add" className={navLinkClass}>
+              <GiGloves className="text-xl" />
+              <span>إضافة قفاز</span>
+            </NavLink>
+
+            <NavLink to="/gloves/list" className={navLinkClass}>
+              <AiOutlineUnorderedList className="text-xl" />
+              <span>قائمة القفازات</span>
+            </NavLink>
+          </div>
         </nav>
 
         <div className="p-4 border-t border-gray-100">
@@ -259,4 +416,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-

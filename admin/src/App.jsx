@@ -100,6 +100,8 @@ import AddElectrical from "./pages/Electrical/AddElectrical";
 import ElectricalList from "./pages/Electrical/ElectricalList";
 import AddRamadan from "./pages/Ramadan/AddRamadan";
 import RamadanList from "./pages/Ramadan/RamadanList";
+import Addgloves from "./pages/gloves/Addgloves";
+import GlovseList from "./pages/gloves/GlovseList";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "EGP";
@@ -144,6 +146,9 @@ const App = () => {
                   <Route path="/electrical/list" element={<ElectricalList token={token} />} />
                   <Route path="/ramadan/add" element={<AddRamadan token={token} />} />
                   <Route path="/ramadan/list" element={<RamadanList token={token} />} />
+                  <Route path="/gloves/add" element={<Addgloves token={token} />} />
+                  <Route path="/gloves/list" element={<GlovseList token={token} />} />
+                  {/* ============= */}
                 </Routes>
               </div>
             </main>

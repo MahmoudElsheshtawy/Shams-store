@@ -158,6 +158,9 @@ const LatestCollection = () => {
                   image={images}
                   name={item.name || "No Name"}
                   price={item.price || 0}
+                  discountPercentage={item.discountPercentage}  // لازم يكون موجود
+                  finalPrice={item.finalPrice}  
+                    discountEnd={item.discountEnd} 
                 />
               );
             })}

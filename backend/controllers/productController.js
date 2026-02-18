@@ -13,7 +13,11 @@ const addProduct = async (req, res) => {
       subCategory,
       sizes,
       shoeSizes,
+      gloveSizes,
       bestseller,
+      discountPercentage,
+      discountStart,
+      discountEnd,
     } = req.body;
 
     const images = ["image1", "image2", "image3", "image4"]
@@ -34,7 +38,16 @@ const addProduct = async (req, res) => {
       discription,
       category,
       subCategory,
+      // ========price and discount
       price: Number(price),
+        discountPercentage: discountPercentage
+          ? Number(discountPercentage)
+          : 0,
+        discountStart: discountStart || null,
+        discountEnd: discountEnd || null,
+      // ========
+      // ========
+
       bestseller: bestseller === "true",
       // sizes: sizes ? JSON.parse(sizes) : [],
       //  // 👟 أحذية
@@ -47,8 +60,13 @@ const addProduct = async (req, res) => {
        ? JSON.parse(shoeSizes || '{"kids":[],"youth":[],"men":[]}')
        : { kids: [], youth: [], men: [] },
 
+        // 🧤 جوانتي (أرقام)
+  gloveSizes: gloveSizes
+    ? JSON.parse(gloveSizes || "[]")
+    : [],
+    
       image: imagesUrl,
-      date: Date.now(),
+      // date: Date.now(),
     };
 
     const product = new productModel(productData);
@@ -115,23 +133,23 @@ const electricalProducts = async (req, res) => {
 
 
 
-export const ramadanProducts = async (req, res) => {
+ const GlovesProducts = async (req, res) => {
   try {
-    const products = await productModel.find({ category: "Ramadan" });
+    const products = await productModel.find({ category: "gloves" });
     res.json({ success: true, products });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
 
-export const eidProducts = async (req, res) => {
-  try {
-    const products = await productModel.find({ category: "eid" });
-    res.json({ success: true, products });
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
-};
+// export const eidProducts = async (req, res) => {
+//   try {
+//     const products = await productModel.find({ category: "eid" });
+//     res.json({ success: true, products });
+//   } catch (error) {
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 // ------------ rating ------------
 const addProductReview = async (req, res) => {
   try {
@@ -189,7 +207,46 @@ const addProductReview = async (req, res) => {
   }
 };
 
+// ------------ Update Discount ------------
+const updateDiscount = async (req, res) => {
+  try {
+    const { id, discountPercentage, discountStart, discountEnd, finalPrice } = req.body;
+    
+    if (!id) {
+      return res.json({ success: false, message: "معرف المنتج مطلوب" });
+    }
 
+    // التحقق من صحة نسبة الخصم
+    if (discountPercentage < 0 || discountPercentage > 100) {
+      return res.json({ success: false, message: "نسبة الخصم يجب أن تكون بين 0 و 100" });
+    }
+
+    // تحديث المنتج
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        discountPercentage: Number(discountPercentage),
+        discountStart: discountStart || null,
+        discountEnd: discountEnd || null,
+        finalPrice: Number(finalPrice)
+      },
+      { new: true } // لإرجاع المنتج بعد التحديث
+    );
+
+    if (!updatedProduct) {
+      return res.json({ success: false, message: "المنتج غير موجود" });
+    }
+
+    res.json({ 
+      success: true, 
+      message: discountPercentage > 0 ? "تم تحديث الخصم بنجاح" : "تم إزالة الخصم بنجاح",
+      product: updatedProduct 
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 export {
   addProduct,
@@ -199,4 +256,6 @@ export {
   updatePrice,
   electricalProducts,
   addProductReview,
+  GlovesProducts,
+  updateDiscount
 };

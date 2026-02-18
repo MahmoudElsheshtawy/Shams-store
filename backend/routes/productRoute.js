@@ -31,10 +31,12 @@ import {
   singleProduct,
   updatePrice,
   electricalProducts,
-  ramadanProducts,
-  eidProducts,
+  // ramadanProducts,
+  // eidProducts,
   // addProductReview,
-  addProductReview ,
+  addProductReview, 
+  GlovesProducts,
+  updateDiscount,
 } from "../controllers/productController.js";
 // import userAuth from "../middleware/auth.js"; // الميدل وير اللي يتحقق من تسجيل الدخول
 // import authUser from "../middleware/auth.js";
@@ -57,8 +59,10 @@ router.post("/single", singleProduct);
 router.get("/list", listProduct);
 router.get("/shoes", electricalProducts);
 router.put("/update-price", adminAuth, updatePrice);
-router.get("/ramadan", ramadanProducts);
-router.get("/eid", eidProducts);
+// router.get("/ramadan", ramadanProducts);
+// router.get("/eid", eidProducts);
+router.get("/gloves",GlovesProducts )
+router.put("/update-discount", adminAuth, updateDiscount);
 router.post("/review", authUser, addProductReview);
 // router.post("/:id/review", authUser, addProductReview);
 // router.post("/:id/review", authUser, addProductReview);
