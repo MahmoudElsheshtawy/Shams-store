@@ -279,6 +279,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { GiElectric, GiGloves, GiRunningShoe } from "react-icons/gi"; // أضفنا GiGloves و GiRunningShoe
 import { LuPackage } from "react-icons/lu";
 import { MdOutlineSportsHandball } from "react-icons/md"; // أيقونة بديلة للقفازات
+import { Users } from "lucide-react";
 
 const Sidebar = () => {
   // دالة لتحديد كلاس الـ NavLink النشط
@@ -337,6 +338,14 @@ const Sidebar = () => {
             <AiOutlineUnorderedList className="text-2xl" />
             <span className="text-[11px] mt-1 whitespace-nowrap">قائمة قفازات</span>
           </NavLink>
+             {/* <NavLink to="/users" className={navLinkClass}>
+              <Users className="text-[11px] mt-1 whitespace-nowrap" />
+              <span>جميع المستخدمين</span>
+            </NavLink> */}
+            <NavLink to="/users" className={mobileNavLinkClass}>
+              <Users className="text-2xl" />
+              <span className="text-[11px] mt-1 whitespace-nowrap">المستخدمين</span>
+            </NavLink>
         </div>
       </div>
 
@@ -401,15 +410,14 @@ const Sidebar = () => {
               <AiOutlineUnorderedList className="text-xl" />
               <span>قائمة القفازات</span>
             </NavLink>
+              <NavLink to="/users" className={navLinkClass}>
+              <Users className="text-xl" />
+              <span>جميع المستخدمين</span>
+            </NavLink>
           </div>
         </nav>
 
-        <div className="p-4 border-t border-gray-100">
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-            <span>جميع الحقوق محفوظة © 2025</span>
-          </div>
-        </div>
+        
       </aside>
     </>
   );

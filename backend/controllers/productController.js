@@ -248,6 +248,107 @@ const updateDiscount = async (req, res) => {
   }
 };
 
+// ====================
+// تحديث المنتج كاملاً
+// تحديث المنتج كاملاً
+const updateProduct = async (req, res) => {
+  try {
+    const { id, name, discription, price, category, subCategory, sizes, shoeSizes, gloveSizes, bestseller, existingImages } = req.body;
+    
+    if (!id || !name || !price) {
+      return res.json({ success: false, message: "البيانات المطلوبة ناقصة" });
+    }
+
+    // معالجة الصور الجديدة إن وجدت
+    const newImages = [];
+    if (req.files) {
+      // تحديد الصور المرفوعة
+      const imageFields = ['newImage1', 'newImage2', 'newImage3', 'newImage4'];
+      
+      for (const field of imageFields) {
+        if (req.files[field] && req.files[field][0]) {
+          try {
+            // رفع الصورة إلى Cloudinary
+            const result = await cloudinary.uploader.upload(req.files[field][0].path, {
+              resource_type: "image",
+            });
+            newImages.push(result.secure_url);
+          } catch (uploadError) {
+            console.error(`خطأ في رفع الصورة ${field}:`, uploadError);
+          }
+        }
+      }
+    }
+
+    // دمج الصور القديمة مع الجديدة
+    let oldImages = [];
+    try {
+      oldImages = existingImages ? JSON.parse(existingImages) : [];
+    } catch (e) {
+      console.error("خطأ في تحليل existingImages:", e);
+    }
+    
+    const finalImages = [...oldImages, ...newImages];
+    
+    // التأكد من وجود صور على الأقل
+    if (finalImages.length === 0) {
+      return res.json({ success: false, message: "يجب إضافة صورة واحدة على الأقل" });
+    }
+
+    // تجهيز بيانات التحديث
+    const updateData = {
+      name,
+      discription: discription || "",
+      price: Number(price),
+      category: category || "",
+      subCategory: subCategory || "",
+      bestseller: bestseller === 'true' || bestseller === true,
+      image: finalImages
+    };
+    
+    // إضافة المقاسات حسب النوع مع التحقق من الصحة
+    if (category === 'shoes') {
+      try {
+        updateData.shoeSizes = shoeSizes ? JSON.parse(shoeSizes) : { kids: [], youth: [], men: [] };
+      } catch (e) {
+        updateData.shoeSizes = { kids: [], youth: [], men: [] };
+      }
+    } else if (category === 'gloves') {
+      try {
+        updateData.gloveSizes = gloveSizes ? JSON.parse(gloveSizes) : [];
+      } catch (e) {
+        updateData.gloveSizes = [];
+      }
+    } else {
+      try {
+        updateData.sizes = sizes ? JSON.parse(sizes) : [];
+      } catch (e) {
+        updateData.sizes = [];
+      }
+    }
+    
+    // تحديث المنتج
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id, 
+      updateData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedProduct) {
+      return res.json({ success: false, message: "المنتج غير موجود" });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: "تم تحديث المنتج بنجاح",
+      product: updatedProduct 
+    });
+    
+  } catch (error) {
+    console.error("خطأ في تحديث المنتج:", error);
+    res.json({ success: false, message: error.message });
+  }
+};
 export {
   addProduct,
   listProduct,
@@ -257,5 +358,6 @@ export {
   electricalProducts,
   addProductReview,
   GlovesProducts,
-  updateDiscount
+  updateDiscount,
+  updateProduct
 };

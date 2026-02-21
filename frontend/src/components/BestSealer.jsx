@@ -103,7 +103,7 @@ import { ShopContext } from '../context/ShopContext';
 
 const BestSealer = () => {
   const { products } = useContext(ShopContext);
-  console.log(products);
+  // console.log(products);
   
   const [bestSellerr, setBestSellerr] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(Date.now());

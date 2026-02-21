@@ -37,6 +37,7 @@ import {
   addProductReview, 
   GlovesProducts,
   updateDiscount,
+  updateProduct,
 } from "../controllers/productController.js";
 // import userAuth from "../middleware/auth.js"; // الميدل وير اللي يتحقق من تسجيل الدخول
 // import authUser from "../middleware/auth.js";
@@ -54,6 +55,12 @@ router.post(
   ]),
   addProduct
 );
+router.put("/update", adminAuth, upload.fields([
+  { name: "newImage1", maxCount: 1 },
+  { name: "newImage2", maxCount: 1 },
+  { name: "newImage3", maxCount: 1 },
+  { name: "newImage4", maxCount: 1 },
+]), updateProduct);
 router.post("/remove", adminAuth, removeProduct);
 router.post("/single", singleProduct);
 router.get("/list", listProduct);

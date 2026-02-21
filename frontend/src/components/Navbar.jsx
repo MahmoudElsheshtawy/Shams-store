@@ -184,6 +184,7 @@ import { assets } from "../assets/frontend_assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import logoooo from "../assets/frontend_assets/logoooo.svg";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -210,8 +211,11 @@ const Navbar = () => {
   const logout = () => {
     navigate("/login");
     localStorage.removeItem("token");
+    localStorage.removeItem("cart");
+
     setToken("");
     setCartItems({});
+     toast.success("تم تسجيل الخروج بنجاح");
   };
 
   // Scroll behavior

@@ -942,7 +942,7 @@ const ShopContextProvider = (props) => {
         
         setProducts(productsWithDiscount);
         localStorage.setItem("products", JSON.stringify(productsWithDiscount));
-        console.log("Products with discount:", productsWithDiscount);
+        // console.log("Products with discount:", productsWithDiscount);
       }
     } catch (error) {
       toast.error(error.message);
