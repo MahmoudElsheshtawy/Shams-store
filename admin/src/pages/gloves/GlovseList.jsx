@@ -532,7 +532,7 @@ const GlovesList = ({ token }) => {
         headers: { token }
       });
       
-      console.log("API Response:", res.data);
+      // console.log("API Response:", res.data);
       
       if (res.data.success) {
         setProducts(res.data.products || []);

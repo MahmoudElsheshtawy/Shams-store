@@ -734,7 +734,7 @@ const Product = () => {
       setProductData(product);
       setMainImage(product.image?.[0] || "");
 
-      // تعيين أول قسم متوفر كمقاس افتراضي
+      // تعيين أول قسم متوفر كمقاس افتراضي للأحذية فقط
       if (product.category === "shoes" && product.shoeSizes) {
         const availableSections = ["men", "youth", "kids"].filter(
           section => product.shoeSizes[section]?.length > 0
@@ -804,16 +804,29 @@ const Product = () => {
   const totalReviews = productData.numReviews || 0;
   const percentage = (count) => (totalReviews ? Math.round((count / totalReviews) * 100) : 0);
 
-  // التحقق مما إذا كان المنتج يحتاج إلى مقاس
+  // ✅ التحقق مما إذا كان المنتج يحتاج إلى مقاس
   const requiresSize = () => {
+    // الإكسسوارات لا تحتاج مقاس
+    if (productData.category === "Accessories") {
+      return false;
+    }
+    
+    // الأحذية والقفازات تحتاج مقاس
     if (productData.category === "shoes" || productData.category === "gloves") {
       return true;
     }
+    
+    // المنتجات العادية تحتاج مقاس إذا كانت المصفوفة sizes موجودة وفيها عناصر
     return productData.sizes && productData.sizes.length > 0;
   };
 
-  // التحقق من توفر المقاسات
+  // ✅ التحقق من توفر المقاسات
   const hasAvailableSizes = () => {
+    // الإكسسوارات لا تحتاج مقاس (متوفرة دائماً)
+    if (productData.category === "Accessories") {
+      return true;
+    }
+    
     if (productData.category === "shoes") {
       return availableShoeSections.length > 0;
     }
@@ -827,6 +840,7 @@ const Product = () => {
   const handleAddToCart = () => {
     if (!token) return toast.error("سجل دخول الأول");
 
+    // التحقق من اختيار المقاس فقط إذا كان المنتج يحتاج مقاس
     if (requiresSize() && !size) {
       if (productData.category === "shoes") {
         return toast.error("اختار مقاس الحذاء قبل الإضافة");
@@ -839,7 +853,10 @@ const Product = () => {
 
     const priceToUse = discountInfo.hasDiscount ? discountInfo.finalPrice : productData.price;
     
-    addToCart(productData._id, size || "no_size", priceToUse);
+    // للإكسسوارات، نمرر "no_size" أو null
+    const sizeToUse = requiresSize() ? size : "no_size";
+    
+    addToCart(productData._id, sizeToUse, priceToUse);
     toast.success("تمت الإضافة للعربة 🛒");
   };
 
@@ -901,7 +918,9 @@ const Product = () => {
           <span className="whitespace-nowrap hover:text-emerald-600">الرئيسية</span>
           <ChevronDown className="w-3 h-3 rotate-[-90deg] flex-shrink-0" />
           <span className="whitespace-nowrap hover:text-emerald-600">
-            {productData.category === "gloves" ? "قفازات" : productData.category}
+            {productData.category === "gloves" ? "قفازات" : 
+             productData.category === "Accessories" ? "إكسسوارات" : 
+             productData.category}
           </span>
           <ChevronDown className="w-3 h-3 rotate-[-90deg] flex-shrink-0" />
           <span className="text-gray-900 font-medium truncate">{productData.name}</span>
@@ -1099,115 +1118,119 @@ const Product = () => {
                 </p>
               </div>
 
-              {/* المقاسات - حسب نوع المنتج */}
-              {productData.category === "shoes" ? (
-                /* مقاسات الأحذية */
-                availableShoeSections.length > 0 && (
-                  <div className="mb-4">
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <Ruler className="w-4 h-4 text-gray-500" />
-                      <p className="text-xs font-medium text-gray-900">اختر مقاس الحذاء</p>
-                    </div>
-                    
-                    {/* أزرار الفئات */}
-                    <div className="mb-2">
-                      <p className="text-xs text-gray-500 mb-1.5">الفئة:</p>
-                      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                        {availableShoeSections.map((section) => (
-                          <button
-                            key={section}
-                            onClick={() => setSelectedSection(section)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
-                              selectedSection === section
-                                ? 'bg-emerald-500 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                          >
-                            {sectionArabic[section]}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+              {/* المقاسات - تظهر فقط للمنتجات التي تحتاج مقاس */}
+              {requiresSize() && (
+                <>
+                  {productData.category === "shoes" ? (
+                    /* مقاسات الأحذية */
+                    availableShoeSections.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <Ruler className="w-4 h-4 text-gray-500" />
+                          <p className="text-xs font-medium text-gray-900">اختر مقاس الحذاء</p>
+                        </div>
+                        
+                        {/* أزرار الفئات */}
+                        <div className="mb-2">
+                          <p className="text-xs text-gray-500 mb-1.5">الفئة:</p>
+                          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                            {availableShoeSections.map((section) => (
+                              <button
+                                key={section}
+                                onClick={() => setSelectedSection(section)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                                  selectedSection === section
+                                    ? 'bg-emerald-500 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
+                                {sectionArabic[section]}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-                    {/* أزرار مقاسات الأحذية */}
-                    <div className="mt-3">
-                      <p className="text-xs text-gray-500 mb-1.5">المقاس:</p>
-                      <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
-                        {productData.shoeSizes?.[selectedSection]?.map((s) => (
-                          <button
-                            key={s}
-                            onClick={() => setSize(s)}
-                            className={`
-                              py-2 rounded-lg border text-xs font-medium transition-all
-                              ${size === s
-                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                                : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                              }
-                            `}
-                          >
-                            {s}
-                          </button>
-                        ))}
+                        {/* أزرار مقاسات الأحذية */}
+                        <div className="mt-3">
+                          <p className="text-xs text-gray-500 mb-1.5">المقاس:</p>
+                          <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
+                            {productData.shoeSizes?.[selectedSection]?.map((s) => (
+                              <button
+                                key={s}
+                                onClick={() => setSize(s)}
+                                className={`
+                                  py-2 rounded-lg border text-xs font-medium transition-all
+                                  ${size === s
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                                  }
+                                `}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )
-              ) : productData.category === "gloves" ? (
-                /* مقاسات القفازات */
-                productData.gloveSizes?.length > 0 && (
-                  <div className="mb-4">
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <Ruler className="w-4 h-4 text-gray-500" />
-                      <p className="text-xs font-medium text-gray-900">اختر مقاس القفاز</p>
-                    </div>
+                    )
+                  ) : productData.category === "gloves" ? (
+                    /* مقاسات القفازات */
+                    productData.gloveSizes?.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <Ruler className="w-4 h-4 text-gray-500" />
+                          <p className="text-xs font-medium text-gray-900">اختر مقاس القفاز</p>
+                        </div>
 
-                    {/* أزرار مقاسات القفازات */}
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-500 mb-1.5">المقاس:</p>
-                      <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
-                        {productData.gloveSizes?.map((s) => (
-                          <button
-                            key={s}
-                            onClick={() => setSize(s)}
-                            className={`
-                              py-2 rounded-lg border text-xs font-medium transition-all
-                              ${size === s
-                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                                : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                              }
-                            `}
-                          >
-                            {s}
-                          </button>
-                        ))}
+                        {/* أزرار مقاسات القفازات */}
+                        <div className="mt-2">
+                          <p className="text-xs text-gray-500 mb-1.5">المقاس:</p>
+                          <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
+                            {productData.gloveSizes?.map((s) => (
+                              <button
+                                key={s}
+                                onClick={() => setSize(s)}
+                                className={`
+                                  py-2 rounded-lg border text-xs font-medium transition-all
+                                  ${size === s
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                                  }
+                                `}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )
-              ) : (
-                /* مقاسات عامة للمنتجات الأخرى */
-                productData.sizes?.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs font-medium text-gray-900 mb-2">المقاسات المتاحة</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {productData.sizes.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => setSize(s)}
-                          className={`
-                            px-3 py-1.5 rounded-lg border text-xs font-medium transition-all min-w-[45px] text-center
-                            ${size === s
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                              : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                            }
-                          `}
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )
+                    )
+                  ) : (
+                    /* مقاسات عامة للمنتجات الأخرى */
+                    productData.sizes?.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs font-medium text-gray-900 mb-2">المقاسات المتاحة</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {productData.sizes.map((s) => (
+                            <button
+                              key={s}
+                              onClick={() => setSize(s)}
+                              className={`
+                                px-3 py-1.5 rounded-lg border text-xs font-medium transition-all min-w-[45px] text-center
+                                ${size === s
+                                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                                }
+                              `}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </>
               )}
 
               {/* إضافة للسلة */}
@@ -1229,7 +1252,7 @@ const Product = () => {
                 </div>
               )}
 
-              {/* رسالة تنبيه للمقاس */}
+              {/* رسالة تنبيه للمقاس - تظهر فقط للمنتجات التي تحتاج مقاس */}
               {requiresSize() && !size && hasAvailableSizes() && (
                 <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
@@ -1284,23 +1307,6 @@ const Product = () => {
                 ))}
               </div>
             </div>
-
-            {/* إضافة تقييم */}
-            {/* <div className="md:w-1/2 bg-gray-50 rounded-lg p-4"> */}
-              {/* <h3  className="text-sm font-medium text-gray-900 mb-3">أضف تقييمك</h3> */}
-              {/* <div className="flex gap-1.5 mb-2">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => handleRating(star)}
-                    className="p-1 hover:bg-gray-200 rounded transition-colors active:scale-95"
-                  >
-                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                  </button>
-                ))}
-              </div> */}
-              {/* <p className="text-xs text-gray-500">اضغط على النجوم للتقييم</p> */}
-            {/* </div> */}
           </div>
         </div>
 

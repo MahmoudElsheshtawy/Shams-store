@@ -38,6 +38,7 @@ import {
   GlovesProducts,
   updateDiscount,
   updateProduct,
+  Accessories,
 } from "../controllers/productController.js";
 // import userAuth from "../middleware/auth.js"; // الميدل وير اللي يتحقق من تسجيل الدخول
 // import authUser from "../middleware/auth.js";
@@ -73,4 +74,6 @@ router.put("/update-discount", adminAuth, updateDiscount);
 router.post("/review", authUser, addProductReview);
 // router.post("/:id/review", authUser, addProductReview);
 // router.post("/:id/review", authUser, addProductReview);
+router.get("/Accessories", Accessories);
+
 export default router;

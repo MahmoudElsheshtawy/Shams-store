@@ -983,16 +983,33 @@ const PriceEditor = ({ item, updatePrice }) => {
 };
 
 // ----- مكون صف المنتج مع تصميم متجاوب -----
+// ----- مكون صف المنتج مع تصميم متجاوب -----
 const ProductRow = ({ item, token, onDelete, onUpdatePrice, onUpdate }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDiscountModal, setShowDiscountModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  
+  // ✅ إضافة هذه الأسطر
+  const [editMode, setEditMode] = useState(false);
+  const [newPrice, setNewPrice] = useState(item.price || 0);
+  const [updating, setUpdating] = useState(false);
 
   const handleDelete = async () => {
     setDeleting(true);
     await onDelete(item._id);
     setDeleting(false);
     setShowDeleteModal(false);
+  };
+
+  // ✅ إضافة دالة حفظ السعر
+  const handleSavePrice = async () => {
+    if (!newPrice || newPrice <= 0) {
+      return toast.error("يرجى إدخال سعر صحيح");
+    }
+    setUpdating(true);
+    await onUpdatePrice(item._id, Number(newPrice));
+    setEditMode(false);
+    setUpdating(false);
   };
 
   const mainImage = Array.isArray(item.image) && item.image[0] 
@@ -1051,65 +1068,108 @@ const ProductRow = ({ item, token, onDelete, onUpdatePrice, onUpdate }) => {
               </div>
               
               <div className="flex flex-col gap-2 mt-2">
-                {discountActive ? (
-                  <div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-base font-bold text-emerald-600">
-                        {item.finalPrice?.toFixed(2) || item.price?.toFixed(2)}
+                {/* وضع التعديل أو العرض العادي */}
+                {editMode ? (
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+                        {currency}
                       </span>
-                      <span className="text-xs text-gray-500">{currency}</span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newPrice}
+                        onChange={(e) => setNewPrice(e.target.value)}
+                        className="w-24 px-3 py-1.5 pl-8 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none transition-all"
+                        autoFocus
+                      />
                     </div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-xs text-gray-400 line-through">
-                        {item.price?.toFixed(2)}
-                      </span>
-                      <span className="text-xs text-gray-400">{currency}</span>
-                    </div>
+                    <button
+                      onClick={handleSavePrice}
+                      disabled={updating}
+                      className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                      title="حفظ"
+                    >
+                      <Check className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditMode(false);
+                        setNewPrice(item.price || 0);
+                      }}
+                      className="p-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                      title="إلغاء"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 ) : (
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-base font-bold text-gray-900">
-                      {item.price?.toFixed(2) || "0.00"}
-                    </span>
-                    <span className="text-xs text-gray-500">{currency}</span>
-                  </div>
+                  <>
+                    {discountActive ? (
+                      <div>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-base font-bold text-emerald-600">
+                            {item.finalPrice?.toFixed(2) || item.price?.toFixed(2)}
+                          </span>
+                          <span className="text-xs text-gray-500">{currency}</span>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-xs text-gray-400 line-through">
+                            {item.price?.toFixed(2)}
+                          </span>
+                          <span className="text-xs text-gray-400">{currency}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-base font-bold text-gray-900">
+                          {item.price?.toFixed(2) || "0.00"}
+                        </span>
+                        <span className="text-xs text-gray-500">{currency}</span>
+                      </div>
+                    )}
+                  </>
                 )}
                 
-                <div className="flex items-center gap-2 mt-2">
-                  <button
-                    onClick={() => setShowDiscountModal(true)}
-                    className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors flex-1 flex items-center justify-center gap-1"
-                    title="تعديل الخصم"
-                  >
-                    <Percent className="w-4 h-4" />
-                    <span className="text-xs">خصم</span>
-                  </button>
-                  <button
-                    onClick={() => setEditMode(true)}
-                    className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-                    title="تعديل السعر"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    disabled={deleting}
-                    className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-                    title="حذف المنتج"
-                  >
-                    {deleting ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
+                {/* أزرار الإجراءات - تظهر فقط إذا لم يكن في وضع التعديل */}
+                {!editMode && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      onClick={() => setShowDiscountModal(true)}
+                      className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors flex-1 flex items-center justify-center gap-1"
+                      title="تعديل الخصم"
+                    >
+                      <Percent className="w-4 h-4" />
+                      <span className="text-xs">خصم</span>
+                    </button>
+                    <button
+                      onClick={() => setEditMode(true)}
+                      className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      title="تعديل السعر"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      disabled={deleting}
+                      className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                      title="حذف المنتج"
+                    >
+                      {deleting ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* نسخة الديسكتوب */}
+        {/* نسخة الديسكتوب (بدون تغيير) */}
         <div className="hidden md:flex items-center gap-6 p-4">
           <div className="flex-shrink-0">
             <ProductImage src={mainImage} alt={item.name} />

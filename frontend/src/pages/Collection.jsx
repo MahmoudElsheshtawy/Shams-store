@@ -815,7 +815,7 @@ import { FaMale, FaFemale, FaChild } from "react-icons/fa";
 import { GiRunningShoe, GiGloves } from "react-icons/gi";
 import { FaTshirt } from "react-icons/fa";
 import { IoMdShirt } from "react-icons/io";
-import { MdOutlineSportsHandball } from "react-icons/md";
+import { MdLayers, MdOutlineSportsHandball } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 
@@ -836,6 +836,7 @@ const Collection = () => {
     { label: "أطفال", value: "Kids", icon: <FaChild className="text-yellow-500" /> },
     { label: "أحذية", value: "shoes", icon: <GiRunningShoe className="text-emerald-500" /> },
     { label: "جوانتي", value: "gloves", icon: <GiGloves className="text-purple-500" /> },
+    { label: "إكسسوارات", value: "Accessories", icon: <MdLayers className="text-red-500" /> },
   ];
 
   // تحديث كل دقيقة للتحقق من انتهاء الخصم

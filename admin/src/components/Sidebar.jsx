@@ -279,7 +279,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { GiElectric, GiGloves, GiRunningShoe } from "react-icons/gi"; // أضفنا GiGloves و GiRunningShoe
 import { LuPackage } from "react-icons/lu";
 import { MdOutlineSportsHandball } from "react-icons/md"; // أيقونة بديلة للقفازات
-import { Users } from "lucide-react";
+import { Gem, Layers, Users } from "lucide-react";
 
 const Sidebar = () => {
   // دالة لتحديد كلاس الـ NavLink النشط
@@ -346,6 +346,16 @@ const Sidebar = () => {
               <Users className="text-2xl" />
               <span className="text-[11px] mt-1 whitespace-nowrap">المستخدمين</span>
             </NavLink>
+
+         <NavLink to="/Accessories/add" className={mobileNavLinkClass}>
+  <Gem className="text-2xl text-emerald-500" />
+  <span className="text-[11px] mt-1 whitespace-nowrap">الإكسسوارات</span>
+</NavLink>
+
+<NavLink to="/Accessories/list" className={mobileNavLinkClass}>
+  <Layers className="text-2xl text-emerald-500" />
+  <span className="text-[11px] mt-1 whitespace-nowrap">قائمة الإكسسوارات</span>
+</NavLink>
         </div>
       </div>
 
@@ -410,10 +420,26 @@ const Sidebar = () => {
               <AiOutlineUnorderedList className="text-xl" />
               <span>قائمة القفازات</span>
             </NavLink>
-              <NavLink to="/users" className={navLinkClass}>
+         
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+          الإكسسوارات            </p>
+              <NavLink to="/Accessories/add" className={navLinkClass}>
+              <Gem className="text-xl" />
+              <span>إضافة إكسسوارات</span>
+            </NavLink>
+              <NavLink to="/Accessories/list" className={navLinkClass}>
+              <Layers className="text-xl" />
+              <span>قائمة الإكسسوارات</span>
+            </NavLink>
+  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+              {/* القفازات */}
+                المستخدمين
+            </p>
+                   <NavLink to="/users" className={navLinkClass}>
               <Users className="text-xl" />
               <span>جميع المستخدمين</span>
             </NavLink>
+                 
           </div>
         </nav>
 

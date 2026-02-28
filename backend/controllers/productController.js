@@ -349,6 +349,14 @@ const updateProduct = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+export const Accessories = async (req, res) => {
+  try {
+    const products = await productModel.find({ category: "Accessories" });
+    res.json({ success: true, products });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
 export {
   addProduct,
   listProduct,
