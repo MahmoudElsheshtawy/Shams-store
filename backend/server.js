@@ -6,6 +6,8 @@ import connectCloudinary from './config/cloudinary.js'
 import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/CartRoute.js'
+import multer from "multer";
+
 import orderRouter from './routes/orderRoute.js'
 import nodemailer from "nodemailer";
 // api config
@@ -58,4 +60,11 @@ app.get('/', (req, res) => {
     res.send('api working')
     
 })
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message === "الملف يجب أن يكون صورة") {
+    return res.json({ success: false, message: err.message });
+  }
+  next(err);
+});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

@@ -149,7 +149,7 @@ const Hero = () => {
     hover:shadow-3xl hover:-translate-y-1
   ">
     <img
-      src={assets.ShamsStoreHome2}
+      src={assets.master}
       alt="Overlay content"
       className="
         w-full

@@ -98,6 +98,7 @@ import sh7 from './sh7.jpeg'
 import sh8 from './sh8.jpeg'
 import sh9 from './sh9.jpeg'
 import sh10 from './sh10.jpeg'
+import master from './master.jpeg'
 
 
 
@@ -112,6 +113,7 @@ export const assets = {
     search_icon,
     star_dull_icon,
     star_icon,
+    master,
     bin_icon,
     support_img,
     menu_icon,

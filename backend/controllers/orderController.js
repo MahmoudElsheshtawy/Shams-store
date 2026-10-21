@@ -1,7 +1,8 @@
 // import Orders from "../../frontend/src/pages/Orders.jsx"
 import orderModel from "../models/orderModel.js"
 import userModel from "../models/userModel.js"
-
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 // placing orders using COD Method 
 // const placeOrder =async (req,res)=>{
 
@@ -61,35 +62,45 @@ const placeOrder = async (req,res)=>{
 
 
 // placing orders using stripe Method 
-const Cash =async (req,res)=>{
+const Cash = async (req, res) => {
   try {
+    const userId = req.userId;
 
-    const userId = req.userId;   // من auth middleware
-    const { items, amount, address } = req.body;
+    // مع FormData الحقول بتوصل كنص، لازم نحولها
+    const items = typeof req.body.items === "string" ? JSON.parse(req.body.items) : req.body.items;
+    const address = typeof req.body.address === "string" ? JSON.parse(req.body.address) : req.body.address;
+    const amount = Number(req.body.amount);
 
-    const orderData = {
+    if (!req.file) {
+      return res.json({ success: false, message: "صورة التحويل مطلوبة" });
+    }
+
+    const uploaded = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "image",
+      folder: "payment-proofs",
+    });
+    fs.unlink(req.file.path, () => {});
+
+    const newOrder = new orderModel({
       userId,
       items,
       address,
       amount,
-      paymentMethod:'تم الدفع كاش',
-      payment:false,
-      date:Date.now()
-    };
-
-    const newOrder = new orderModel(orderData);
+      paymentMethod: "تم الدفع كاش",
+      payment: false,
+      paymentProof: uploaded.secure_url,
+      date: Date.now(),
+    });
     await newOrder.save();
 
-    await userModel.findByIdAndUpdate(userId,{ cartData:{} });
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    res.json({ success:true, message:"Order Placed" });
-
+    res.json({ success: true, message: "Order Placed" });
   } catch (error) {
     console.log(error);
-    res.json({ success:false, message:error.message });
+    res.json({ success: false, message: error.message });
   }
-}
-
+};
 
 // placing orders using Razorpay Method 
 const placeOrderRazorpay =async (req,res)=>{

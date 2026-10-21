@@ -1,3 +1,35 @@
+// import express from "express";
+// import {
+//   placeOrder,
+//   placeOrderStripe,
+//   placeOrderRazorpay,
+//   allOrders,
+//   userOrders,
+//   updateStatus,
+//   Cash,
+// } from "../controllers/orderController.js";
+// import adminAuth from "../middleware/adminAuth.js";
+// import authUser from "../middleware/auth.js";
+
+// const orderRouter =express.Router()
+
+// // Admin Features
+// orderRouter.post('/list',adminAuth,allOrders)
+// orderRouter.post('/status',adminAuth,updateStatus)
+
+
+// // paymend Features
+// orderRouter.post('/place',authUser,placeOrder)
+// orderRouter.post('/stripe',authUser,placeOrderStripe)
+// orderRouter.post('/razorpay',authUser,placeOrderRazorpay)
+// orderRouter.post('/cash',authUser,Cash)
+
+
+// // user Features
+// orderRouter.post('/userorders',authUser,userOrders)
+
+
+// export default orderRouter
 import express from "express";
 import {
   placeOrder,
@@ -10,6 +42,7 @@ import {
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import authUser from "../middleware/auth.js";
+import { uploadProof } from "../middleware/multer.js";
 
 const orderRouter =express.Router()
 
@@ -22,8 +55,8 @@ orderRouter.post('/status',adminAuth,updateStatus)
 orderRouter.post('/place',authUser,placeOrder)
 orderRouter.post('/stripe',authUser,placeOrderStripe)
 orderRouter.post('/razorpay',authUser,placeOrderRazorpay)
-orderRouter.post('/cash',authUser,Cash)
-
+// orderRouter.post('/cash',authUser,Cash)
+orderRouter.post('/cash', authUser, uploadProof.single("screenshot"), Cash)
 
 // user Features
 orderRouter.post('/userorders',authUser,userOrders)
